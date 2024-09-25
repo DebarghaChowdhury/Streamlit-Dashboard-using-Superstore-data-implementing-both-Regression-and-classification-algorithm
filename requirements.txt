@@ -1,0 +1,12 @@
+pip install streamlit
+pip install plotly_express
+pip install matplotlib
+pip install scikit-learn 
+pip install hvplot
+pip install seaborn
+pip install tensorflow
+pip install xgboost
+
+streamlit run .\dashboard.py
+streamlit run .\dashboard.py --server. port 8888
+
