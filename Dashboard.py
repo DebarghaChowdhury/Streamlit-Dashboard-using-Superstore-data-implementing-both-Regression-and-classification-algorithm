@@ -155,8 +155,8 @@ with st.expander("Summary_Table"):
 # Create a scatter plot
 data1 = px.scatter(filtered_df, x = "Sales", y = "Profit", size = "Quantity")
 data1['layout'].update(title="Relationship between Sales and Profits using Scatter Plot.",
-                       titlefont = dict(size=20),xaxis = dict(title="Sales",titlefont=dict(size=19)),
-                       yaxis = dict(title = "Profit", titlefont = dict(size=19)))
+                       title_font = dict(size=20),xaxis = dict(title="Sales",title_font=dict(size=19)),
+                       yaxis = dict(title = "Profit", title_font = dict(size=19)))
 st.plotly_chart(data1,use_container_width=True)
 
 with st.expander("View Data"):
@@ -166,28 +166,28 @@ with st.expander("View Data"):
 csv = df.to_csv(index = False).encode('utf-8')
 st.download_button('Download Data', data = csv, file_name = "Data.csv",mime = "text/csv")
 
-
+import io
 st.subheader(":point_right: Exploratory Data Analysis")
-# Capture the output of df.info()
-output = StringIO()
-original_stdout = sys.stdout # Save the original standard output
-sys.stdout = output # Redirect standard output to the StringIO object
-df.info() # This will write to the StringIO object instead of standard output
-sys.stdout = original_stdout 
-st.write("##### DataFrame Information:")
-st.text(output.getvalue())
+buffer = io.StringIO()
+df.info(buf=buffer)
+st.write("##### Descriptive Statistics:")
+st.dataframe(df.describe(include="all"))
+
+
 
 
 eda1, eda2 = st.columns((2))
 with eda1:
     st.write("##### Checking for null values:")
-    missing_values_summary = df.isna().sum()
-    st.text(missing_values_summary)
+    missing_values_summary = df.isna().sum().reset_index()
+    missing_values_summary.columns = ["Columns", "Count of Missing Values"]
+    st.dataframe(missing_values_summary)
 
 with eda2:
     st.write("##### Overviewing the datatypes:")
-    data_types = df.dtypes
-    st.text(data_types)
+    data_types = df.dtypes.reset_index()
+    data_types.columns = ["Columns", "Data Type"]
+    st.dataframe(data_types)
 
 
 st.write("##### Descriptive statistics:")
@@ -1059,7 +1059,7 @@ with ML_Sales:
 
 
 
-st.subheader(":point_right: Initiation of Machine Learning Classification Analysis")
+st.subheader(":point_right: Initiation of Machine Learning Classification Analysis Predicting Region")
 
 X_region = df_clean.drop(["Region"],axis=1)
 y_region = df_clean[["Region"]]
